@@ -1,40 +1,26 @@
 # IRobo-18
 
-## Instalation with Docker (Fast)
+## Guide
 
-Make the bash files executable:
+### How to run `.launch` files?
+Either `cd` into the location of the file and run
 ```
-chmod +x docker-rebuild.sh; chmod +x docker-run.sh 
+roslaunch my-launch.launch
+``` 
+or get the file into a `<pkg>/launch/` folder and run
 ```
-<br>
-
-Run this command to build/rebuild the container:
-```
-./docker-rebuild.sh
-```
-And this command to run the container:
-```
-./docker-run.sh
+roslaunch <pkg> my-launch.launch
 ```
 
+### How to make gazebo not show GUI when running `roslaunch turtlebot3_gazebo turtlebot3_world.launch` ?
 
-## Instalation with Docker (Manual)
-
-Run this command to build the docker image once after cloning:
+Run
 ```bash
-sudo docker build -t ros-noetic-env .
+cd `rospack find turtlebot3_gazebo`/launch
 ```
-<br>
-
-Check if the image is installed with:
-```bash
-sudo docker image ls
+to move into the folder that contains all `.launch` files. Open the file `turtlebot3_world.launch` and edit the following line: 
 ```
-A `ros-noetic-env` REPOSITORY should appear.
-<br>
-<br>
-
-Run the docker container mounting the repository files:
-```bash
-sudo docker run -it --name ros-noetic-container -v $(pwd):/app ros-noetic-env
+...
+<arg name="gui" value="true"/>
+...
 ```

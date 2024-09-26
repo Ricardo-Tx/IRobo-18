@@ -1,0 +1,30 @@
+frequency: 25.0  # Set this to the frequency of your odometry and IMU data
+# Original era 30Hz mas o sensor de odom da info a 25.6Hz logo baixa-se para 25.0Hz
+sensor_timeout: 1.0
+two_d_mode: true  # Set to true if you are only operating in 2D
+
+# Specify the input data sources (odom and IMU)
+odom0: /odom  # Topic for odometry
+odom0_config: [true,  true,  false,  # x, y, z
+               false, false, true,   # roll, pitch, yaw
+               true,  false,  false,  # v_x, v_y, v_z
+               false, false, false,  # v_roll, v_pitch, v_yaw
+               false, false, false]  # any other needed parameters
+odom0_queue_size: 10
+odom0_differential: false
+odom0_relative: false
+
+imu0: /imu  # Topic for IMU data
+imu0_config: [false, false, false,   # x, y, z
+               false,  false,  false,   # roll, pitch, yaw
+               false, false, false,   # v_x, v_y, v_z
+               false, false, true,   # v_roll, v_pitch, v_yaw
+               true, false, false]   # any other needed parameters
+imu0_queue_size: 10
+imu0_differential: true
+imu0_relative: false
+imu0_remove_gravitational_acceleration: true
+
+# State to estimate
+# [x, y, z, roll, pitch, yaw, x_dot, y_dot, z_dot, roll_dot, pitch_dot, yaw_dot]
+predict_to_current_time: true

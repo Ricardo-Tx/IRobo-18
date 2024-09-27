@@ -84,6 +84,7 @@ token.txt
 .env
 install_ros_noetic.sh
 *.bak
+roscore.log
 
 
 # Catkin workspaces

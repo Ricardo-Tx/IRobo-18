@@ -47,6 +47,13 @@ roslaunch turtlebot3_datasets turtlebot3_playbag.launch
 ``` 
 to work. It depends on `ekf_config.yaml` being in the right location and a RViz config file `rosbag.rviz` being available at the location `<workspace>/src/turtlebot3_datasets/data/`. Tweak the file locations in the launch file as necessary.
 
+To show a plot of the **/error** topic (or any other numeric topic) run:
+```bash
+roslaunch turtlebot3_datasets turtlebot3_playbag.launch plot:=/error
+```
+To rescale the plot go into *Figure Options*, set the X range to [0, 124] and Y to [0, 200].
+
+
 ### What to do with the matrix transformation in the [turtlerobot3_datasets](https://github.com/irob-labs-ist/turtlebot3_datasets) package?
 
 The transformation is strictly equal to that in `publish_initial_tf.sh`. The first 3 digits are the translation *(x, y, z)* and the last 4 are the rotation quaternion *(x, y, z, w)*.

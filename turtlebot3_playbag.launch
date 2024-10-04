@@ -3,33 +3,34 @@
   <arg name="model" default="waffle_pi"/>
   <arg name="bag_name" default="fixed_slam_easy"/>
   <arg name="map_file" default="$(find turtlebot3_datasets)/data/map.yaml"/>
+  <arg name="plot" default="" />
+
 
   <!-- Turtlebot3 -->
   <include file="$(find turtlebot3_bringup)/launch/turtlebot3_remote.launch">
     <arg name="model" value="$(arg model)" />
   </include>
 
+
   <!-- Map server -->
   <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
 
 
   <!-- TF -->
-
-  <!-- Initial static transform -->
   <node pkg="tf2_ros" name="static_transform_publisher_odom" type="static_transform_publisher" 
-        args="0.935 1.34 -0.023 0.001 -0.003 0.737 0.676 mocap odom" />
+    args="0.935 1.34 -0.023 0.001 -0.003 0.737 0.676 mocap odom" />
 
   <node pkg="tf2_ros" name="static_transform_publisher_imu" type="static_transform_publisher" 
-        args="0.935 1.34 -0.023 0.001 -0.003 0.737 0.676 mocap imu" />
+    args="0.935 1.34 -0.023 0.001 -0.003 0.737 0.676 mocap imu" />
 
   <node pkg="tf2_ros" name="static_transform_publisher_map" type="static_transform_publisher" 
-        args="0.935 1.34 -0.023 0.001 -0.003 0.737 0.676 mocap map" />
+    args="0.935 1.34 -0.023 0.001 -0.003 0.737 0.676 mocap map" />
 
-
+  
   <!-- ROSBAG -->
   <param name="/use_sim_time" value="true"/>
   <node pkg="rosbag" type="play" name="rosbag_player" 
-          args="--clock $(find turtlebot3_datasets)/data/$(arg bag_name).bag"/>
+    args="--clock $(find turtlebot3_datasets)/data/$(arg bag_name).bag"/>
 
 
   <!-- EKF robot localisation -->
@@ -38,6 +39,7 @@
     <rosparam file="$(find robot_localization)/params/ekf_config.yaml" command="load" />
   </node>
 
+
   <!-- AMCL-->
 
   <!-- Groundtruth path -->
@@ -45,8 +47,16 @@
   <!-- Estimated path -->
 
   <!-- Position error publisher -->
+  <node name="calculate_error_node" pkg="turtlebot3_datasets" type="calculate_error.py">
+    <param name="use_sim_time" value="true" />
+  </node>
 
   <!-- rviz -->
-  <node type="rviz" name="rviz" pkg="rviz" args="-d $(find turtlebot3_datasets)/data/rosbag.rviz" />
+  <node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find turtlebot3_datasets)/data/rosbag.rviz"/>
+
+  <!-- rqtplot -->
+  <node pkg="rqt_plot" type="rqt_plot" name="graph" if="$(eval plot != '')">
+    <remap from="/rqt_plot/topic" to="$(arg plot)" />
+  </node>
 
 </launch>

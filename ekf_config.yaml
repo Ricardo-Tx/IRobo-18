@@ -3,31 +3,46 @@ frequency: 25.0  # Set this to the frequency of your odometry and IMU data
 sensor_timeout: 1.0
 two_d_mode: true  # Set to true if you are only operating in 2D
 
+
+# ----------------------------------------
+#        DÁ POSIÇÃO E VELOCIDADE
+# ----------------------------------------
+
 # Specify the input data sources (odom and IMU)
 odom0: /odom  # Topic for odometry
 odom0_config: [true,  true,  false,  # x, y, z
                false, false, true,   # roll, pitch, yaw
                true,  false,  false,  # v_x, v_y, v_z
                false, false, false,  # v_roll, v_pitch, v_yaw
-               false, false, false]  # any other needed parameters
+               false, false, false]  # acelleration
 odom0_queue_size: 10
 odom0_differential: false
 odom0_relative: false
+
+
+
+
+
+# ----------------------------------------
+#            DÁ ACELERAÇÃO
+# ----------------------------------------
 
 imu0: /imu  # Topic for IMU data
 imu0_config: [false, false, false,   # x, y, z
                false,  false,  false,   # roll, pitch, yaw
                false, false, false,   # v_x, v_y, v_z
                false, false, true,   # v_roll, v_pitch, v_yaw
-               true, false, false]   # any other needed parameters
+               true, false, false]   # acelleration
 imu0_queue_size: 10
 imu0_differential: true
 imu0_relative: false
 imu0_remove_gravitational_acceleration: true
 
-# Setup frames
-world_frame: odom
-base_link_frame: base_footprint
+
+# Frame settings
+world_frame: odom               # World frame for odometry
+base_link_frame: base_footprint  # Frame representing the base of the robot
+
 
 # State to estimate
 # [x, y, z, roll, pitch, yaw, x_dot, y_dot, z_dot, roll_dot, pitch_dot, yaw_dot]

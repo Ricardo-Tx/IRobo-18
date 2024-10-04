@@ -2,6 +2,13 @@
 
 ## Guide
 
+### What to do with `calculate_error.py` ?
+Paste the improved version of the file in `<workspace>/src/turtlebot3_datasets/scripts/`.
+Current improvements include:
+- Publishing the error values to the **/error** topic
+- Exiting in *SIGINT* a.k.a. exiting is faster
+
+
 ### What to do with `ekf_config.yaml` ?
 
 The file should be copied to the directory `<workspace>/src/robot_localization/params/`. It is accessed by the `turtlebot3_playbag.launch` launch file dynamically at this location.

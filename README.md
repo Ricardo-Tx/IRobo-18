@@ -8,6 +8,32 @@ Current improvements include:
 - Publishing the error values to the **/error** topic
 - Exiting in *SIGINT* a.k.a. exiting is faster
 
+### How do I change control to the robot/simulation ?
+
+Copy `set_host.sh` somewhere.
+Run
+```bash
+chmod +x set_host.sh
+```
+to make it executable. Now run
+```bash
+source ./set_host.sh
+```
+to set the current host. Do the same for `ping_host.sh` to check if the robot in online.
+
+Since setting the appropriate environment variables is necessary for every terminal (**roscore**, **teleop**, **rviz**, **...**), it's recommended to add these scripts in `.bashrc` as aliases for easy access:
+```bash
+alias sethost='source <path>/set_host.sh'
+alias pinghost='source <path>/ping_host.sh'
+```
+Now the commands
+```bash
+sethost
+```
+```bash
+pinghost
+```
+work in any terminal, in any directory.
 
 ### What to do with `ekf_config.yaml` ?
 

@@ -22,11 +22,11 @@ if [[ $choice -eq 0 ]]; then
 else
     TURTLEBOT3_IP="${BASE_IP}$(($BASE_NUMBER + $choice))"  # TurtleBot3 IPs from 11 to 15
     TURTLEBOT3_NUMBER="$(($BASE_NUMBER + $choice))"
+    TURTLEBOT3_NAME="waffle$choice"
 fi
 
 # Set the environment variables
 export TURTLEBOT3_MODEL="waffle_pi"
-export TURTLEBOT3_NAME="waffle4"
 export TURTLEBOT3_IP
 export TURTLEBOT3_NUMBER
 export ROS_MASTER_URI="http://${TURTLEBOT3_IP}:11311"

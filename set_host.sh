@@ -31,4 +31,9 @@ export TURTLEBOT3_IP
 export TURTLEBOT3_NUMBER
 export ROS_MASTER_URI="http://${TURTLEBOT3_IP}:11311"
 
+# IP_ADDRESS=$(hostname -I | awk '{print $1}')
+IP_ADDRESS="172.19.228.77"
+export ROS_HOSTNAME="$IP_ADDRESS"
+export ROS_IP="$IP_ADDRESS"
+
 echo "Environment variables set for TurtleBot3 with IP: $TURTLEBOT3_IP"

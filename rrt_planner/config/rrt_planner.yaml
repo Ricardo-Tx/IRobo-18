@@ -1,0 +1,9 @@
+RRTPlannerROS: {
+  goal_tolerance: 0.40, #default 0.20
+
+  rrt: {
+    step: 0.10, #default 0.20
+    min_num_nodes: 200, #default 200
+    max_num_nodes: 7000, #default 5000
+  }
+}

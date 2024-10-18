@@ -1,4 +1,3 @@
-
 #ifndef _RTT_PLANNER_RTT_PLANNER_H
 #define _RTT_PLANNER_RTT_PLANNER_H
 
@@ -77,21 +76,23 @@ namespace rrt_planner {
 
             ~RRTPlanner() {};
 
+            /**
+             * @brief Reset the path generation status.
+             */
+            void resetPath(); // Add declaration here
             
-            private:
-                double start_[2], goal_[2];
-                double rand_point_[2], candidate_point_[2];
-                float map_width_, map_height_;
-                costmap_2d::Costmap2D* costmap_;
-                std::vector<Node> nodes_;
-                rrt_params params_;
-                CollisionDetector collision_dect_;
-                RandomDoubleGenerator random_double_x, random_double_y;
-
+        private:
+            double start_[2], goal_[2];
+            double rand_point_[2], candidate_point_[2];
+            float map_width_, map_height_;
+            costmap_2d::Costmap2D* costmap_;
+            std::vector<Node> nodes_;
+            rrt_params params_;
+            CollisionDetector collision_dect_;
+            RandomDoubleGenerator random_double_x, random_double_y;
+            bool path_generated_; // Declaration for path_generated_
     };
 
 };
 
 #endif // _RTT_PLANNER_RTT_PLANNER_H
-
-

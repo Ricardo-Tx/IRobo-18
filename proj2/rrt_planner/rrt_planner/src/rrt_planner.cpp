@@ -1,22 +1,14 @@
 #include <rrt_planner/rrt_planner.h>
-#include <cmath>  // for sqrt, pow
-#include <cstdlib> // for rand, srand
-#include <rrt_planner/random_double_generator.h> // Include the random double generator header
 
 namespace rrt_planner {
 
-    // Define RandomDoubleGenerator objects
-    RandomDoubleGenerator random_double_x; // Random generator for X
-    RandomDoubleGenerator random_double_y; // Random generator for Y
-
-    RRTPlanner::RRTPlanner(costmap_2d::Costmap2DROS *costmap, 
-            const rrt_params& params) : params_(params), collision_dect_(costmap) {
-
+    RRTPlanner::RRTPlanner(costmap_2d::Costmap2DROS *costmap, const rrt_params& params) 
+        : params_(params), collision_dect_(costmap), path_generated_(false) { // Initialize path_generated_
+        
         costmap_ = costmap->getCostmap();
         map_width_  = costmap_->getSizeInMetersX();
         map_height_ = costmap_->getSizeInMetersY();
 
-        // Set the range for random generators
         random_double_x.setRange(-map_width_, map_width_);
         random_double_y.setRange(-map_height_, map_height_);
 
@@ -24,7 +16,7 @@ namespace rrt_planner {
     }
 
     bool RRTPlanner::planPath() {
-        // Clear everything before planning
+        resetPath(); // Reset path status at the start
         nodes_.clear();
 
         // Start Node
@@ -36,7 +28,7 @@ namespace rrt_planner {
         for (unsigned int k = 1; k <= params_.max_num_nodes; k++) {
             p_rand = sampleRandomPoint();
             nearest_node = nodes_[getNearestNodeId(p_rand)];
-            p_new = extendTree(nearest_node.pos, p_rand); // new point and node candidate
+            p_new = extendTree(nearest_node.pos, p_rand); // New point and node candidate
 
             if (!collision_dect_.obstacleBetween(nearest_node.pos, p_new)) {
                 createNewNode(p_new, nearest_node.node_id);
@@ -44,14 +36,19 @@ namespace rrt_planner {
                 continue;
             }
 
-            if (k > params_.min_num_nodes) {
-                if (computeDistance(p_new, goal_) <= params_.goal_tolerance) {
+            if(k > params_.min_num_nodes) {
+                if(computeDistance(p_new, goal_) <= params_.goal_tolerance) {
+                    path_generated_ = true; // Mark path as generated
                     return true;
                 }
             }
         }
-
         return false;
+    }
+
+    void RRTPlanner::resetPath() {
+        path_generated_ = false; // Reset the path status
+        nodes_.clear(); // Clear the node list if necessary
     }
 
     int RRTPlanner::getNearestNodeId(const double *point) {
@@ -59,8 +56,8 @@ namespace rrt_planner {
         double min_dist = std::numeric_limits<double>::max();
         double dist;
 
-        for (size_t i = 0; i < nodes_.size(); i++) {
-            dist = computeDistance(nodes_[i].pos, point);
+        for (int i = 0; i < nodes_.size(); ++i) {
+            dist = computeDistance(point, nodes_[i].pos);
             if (dist < min_dist) {
                 min_dist = dist;
                 nearest_node_id = i;
@@ -74,15 +71,15 @@ namespace rrt_planner {
         Node new_node;
         new_node.pos[0] = pos[0];
         new_node.pos[1] = pos[1];
-        new_node.node_id = nodes_.size();  // Node ID is its index in the vector
-        new_node.parent_id = parent_node_id;
+        new_node.node_id = nodes_.size();  // Assign a new node ID
+        new_node.parent_id = parent_node_id;  // Link to the parent node
 
         nodes_.emplace_back(new_node);
     }
 
     double* RRTPlanner::sampleRandomPoint() {
-        rand_point_[0] = random_double_x.generate();  // Use the generate method
-        rand_point_[1] = random_double_y.generate();  // Use the generate method
+        rand_point_[0] = random_double_x.generate();
+        rand_point_[1] = random_double_y.generate();
 
         return rand_point_;
     }
@@ -90,27 +87,28 @@ namespace rrt_planner {
     double* RRTPlanner::extendTree(const double* point_nearest, const double* point_rand) {
         double direction_x = point_rand[0] - point_nearest[0];
         double direction_y = point_rand[1] - point_nearest[1];
-        double norm = std::sqrt(direction_x * direction_x + direction_y * direction_y);
+        double length = sqrt(direction_x * direction_x + direction_y * direction_y);
 
-        // Normalize the direction and extend by step size
-        candidate_point_[0] = point_nearest[0] + params_.step * (direction_x / norm); // Changed here
-        candidate_point_[1] = point_nearest[1] + params_.step * (direction_y / norm); // Changed here
+        candidate_point_[0] = point_nearest[0] + (params_.step / length) * direction_x; // Use params_.step
+        candidate_point_[1] = point_nearest[1] + (params_.step / length) * direction_y; // Use params_.step
 
         return candidate_point_;
     }
 
     const std::vector<Node>& RRTPlanner::getTree() {
-        return nodes_;
+        return nodes_; // Return the vector of nodes
     }
 
     void RRTPlanner::setStart(double *start) {
         start_[0] = start[0];
         start_[1] = start[1];
+        resetPath();  // Reset path if the start changes
     }
 
     void RRTPlanner::setGoal(double *goal) {
         goal_[0] = goal[0];
         goal_[1] = goal[1];
+        resetPath();  // Reset path if the goal changes
     }
 
-}; // namespace rrt_planner
+};

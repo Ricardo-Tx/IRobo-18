@@ -1,0 +1,40 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="model" default="waffle_pi"/>
+  <arg name="bag_name" default="$(find turtlebot3_datasets)/data/grupo18_no_gmapping_2024-10-14-16-15-44.bag"/>
+  <arg name="map_file" default="$(find turtlebot3_datasets)/data/grupo18.yaml" />
+
+  
+  <!-- ROSBAG -->
+  <param name="/use_sim_time" value="true"/>
+  <node pkg="rosbag" type="play" name="rosbag_player" 
+    args="--clock $(arg bag_name)"/>
+
+
+  <!-- amcl path -->
+  <node name="amcl_path_node" pkg="turtlebot3_datasets" type="amcl_with_path.py" output="screen">
+    <param name="use_sim_time" value="true" />
+  </node>
+
+
+  <!-- pose:
+    position:
+      x: 2.8350000381469727
+      y: 1.8399993181228638
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: -0.9931210819978034
+      w: 0.11709191471451982 -->
+
+
+  <!-- robot navigation -->
+  <include file="$(find turtlebot3_datasets)/launch/turtlebot3_navigation.launch">
+    <arg name="map_file" value="$(arg map_file)" />
+    <arg name="initial_pose_X" value="2.8350000381469727+0.02" />
+    <arg name="initial_pose_Y" value="1.8399993181228638" />
+    <arg name="initial_pose_A" value="-2.9068704" />
+  </include>
+
+</launch>

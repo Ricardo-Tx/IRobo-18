@@ -1,5 +1,43 @@
 # IRobo-18
 
+## Manifest
+This manifest specifies which and where files need to be present for the catkin workspaces `mini-project-1` and `mini-project-2`, if separate:
+```
+/mini-project-1
+├── build/
+├── devel/
+├── src/
+│   ├── robot_localization/
+│   │   └── params/
+│   │       └── ekf_config.yaml   
+│   └── turtlebot3_datasets/
+│       ├── data/
+│       │   ├── grupo18_no_gmapping_2024-10-14-16-15-44.bag
+│       │   ├── grupo18.pgm
+│       │   ├── grupo18.yaml
+│       │   └── rosbag.rviz
+│       ├── launch/
+│       │   ├── turtlebot3_no_gmapping.launch
+│       │   └── turtlebot3_playbag.launch
+│       └── scripts/
+│           ├── amcl_with_path.py 
+│           ├── calculate_error.py
+│           ├── calculate_points.py
+│           ├── ekf_with_path.py 
+│           ├── publish_cov.py 
+│           └── tf_to_path_node.py
+└── .catkin_workspace
+
+/mini-project-2
+├── build/
+├── devel/
+├── src/
+│   └── rrt_planner/
+└── .catkin_workspace
+```
+
+`rrt_planner` should be a clone of our [rrt_planner fork](https://github.com/Ricardo-Tx/rrt_planner), and be updated regularly.
+
 ## Guide
 
 ### What to do with `calculate_error.py` ?

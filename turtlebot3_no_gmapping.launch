@@ -17,7 +17,10 @@
   </node>
 
 
-  <!-- pose:
+  <!-- 
+  FIRST ESITMATE
+
+  pose:
     position:
       x: 2.8350000381469727
       y: 1.8399993181228638
@@ -26,15 +29,51 @@
       x: 0.0
       y: 0.0
       z: -0.9931210819978034
-      w: 0.11709191471451982 -->
+      w: 0.11709191471451982 
+  -->
 
 
-  <!-- robot navigation -->
-  <include file="$(find turtlebot3_datasets)/launch/turtlebot3_navigation.launch">
+
+  <!-- turtlebot3_navigation.launch DEPENDENCY -->
+  <!-- <include file="$(find turtlebot3_datasets)/launch/turtlebot3_navigation.launch">
     <arg name="map_file" value="$(arg map_file)" />
     <arg name="initial_pose_X" value="2.8350000381469727+0.02" />
     <arg name="initial_pose_Y" value="1.8399993181228638" />
     <arg name="initial_pose_A" value="-2.9068704" />
+  </include> -->
+
+
+  <!-- turtlebot3_navigation.launch CONTENTS -->
+  <arg name="open_rviz" default="true"/>
+  <arg name="initial_pos" default="false"/>
+  <arg name="move_forward_only" default="false"/>
+
+  <!-- Turtlebot3 -->
+  <include file="$(find turtlebot3_bringup)/launch/turtlebot3_remote.launch">
+    <arg name="model" value="$(arg model)" />
   </include>
 
+  <!-- Map server -->
+  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
+
+  <!-- AMCL -->
+  <include file="$(find turtlebot3_navigation)/launch/amcl.launch">
+    <group if="$(arg initial_pos)"> 
+      <arg name="initial_pose_x" value="2.8350000381469727+0.005" />
+      <arg name="initial_pose_y" value="1.8399993181228638" />
+      <arg name="initial_pose_a" value="-2.9068704" />
+    </group>
+  </include>
+
+  <!-- move_base -->
+  <include file="$(find turtlebot3_navigation)/launch/move_base.launch">
+    <arg name="model" value="$(arg model)" />
+    <arg name="move_forward_only" value="$(arg move_forward_only)"/>
+  </include>
+
+  <!-- rviz -->
+  <group if="$(arg open_rviz)"> 
+    <node pkg="rviz" type="rviz" name="rviz" required="true"
+          args="-d $(find turtlebot3_navigation)/rviz/turtlebot3_navigation.rviz"/>
+  </group>
 </launch>

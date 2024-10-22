@@ -69,8 +69,13 @@ rospy.sleep(0.00001)
 
 handler = TransformHandler(gt_frame, est_frame, max_time_between=20) # 500ms
 
+last_eucl = 0
+int_eucl = 0
+
+msg_count = 0
+
 rospy.loginfo('Listening to frames and computing error, press Ctrl-C to stop')
-sleeper = rospy.Rate(1000)
+sleeper = rospy.Rate(10)
 try:
     while not rospy.is_shutdown():
         try:
@@ -78,9 +83,15 @@ try:
         except Exception as e:
             rospy.logwarn(e)
         else:
+            
             eucl = get_errors(t)
-            rospy.loginfo('Error (in mm): {:.2f}'.format(eucl * 1e3))
+            int_eucl += (eucl+last_eucl)*0.5*0.001
+            last_eucl = eucl
+
             pub.publish(eucl * 1e3)
+            msg_count += 1
+            if msg_count % 2 == 0:
+                rospy.loginfo(f'Error: {eucl*1e3:.2f} mm;    Integral: {int_eucl*1e3:.2f} mm*s')
 
         try:
             sleeper.sleep()

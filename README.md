@@ -15,6 +15,7 @@ This manifest specifies which and where files need to be present for the catkin 
 │       │   ├── grupo18_no_gmapping_2024-10-14-16-15-44.bag
 │       │   ├── grupo18.pgm
 │       │   ├── grupo18.yaml
+│       │   ├── no_gmapping.rviz
 │       │   └── rosbag.rviz
 │       ├── launch/
 │       │   ├── turtlebot3_no_gmapping.launch
